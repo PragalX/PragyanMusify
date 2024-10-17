@@ -6,7 +6,7 @@ import config
 from ..logging import LOGGER
 
 
-class AashikaMusicBot(Client):
+class PragyanMusic(Client):
     def __init__(self):
         LOGGER(__name__).info(f"Starting Bot...")
         super().__init__(
