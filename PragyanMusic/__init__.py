@@ -1,4 +1,4 @@
-from PragyanMusic.core.bot import AashikaMusicBot
+from PragyanMusic.core.bot import PragyanMusic
 from PragyanMusic.core.dir import dirr
 from PragyanMusic.core.git import git
 from PragyanMusic.core.userbot import Userbot
@@ -12,7 +12,7 @@ git()
 dbb()
 heroku()
 
-app = AashikaMusicBot()
+app = PragyanMusic()
 api = SafoneAPI()
 userbot = Userbot()
 
