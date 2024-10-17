@@ -1,9 +1,9 @@
 import random
 import string
-
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InputMediaPhoto, Message
 from pytgcalls.exceptions import NoActiveGroupCall
+from PIL import Image, Resampling  # Updated import for resampling
 
 import config
 from PragyanMusic import Apple, Resso, SoundCloud, Spotify, Telegram, YouTube, app
@@ -27,7 +27,6 @@ from config import BANNED_USERS, lyrical
 
 @app.on_message(
    filters.command(["play", "vplay", "cplay", "cvplay", "playforce", "vplayforce", "cplayforce", "cvplayforce"] ,prefixes=["/", "!", "%", ",",  ".", "@", "#"])
-            
     & filters.group
     & ~BANNED_USERS
 )
