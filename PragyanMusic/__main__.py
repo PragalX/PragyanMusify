@@ -6,7 +6,7 @@ from pytgcalls.exceptions import NoActiveGroupCall
 
 import config
 from PragyanMusic import LOGGER, app, userbot
-from PragyanMusic.core.call import AashikaMusicBot
+from PragyanMusic.core.call import PragyanMusic
 from PragyanMusic.misc import sudo
 from PragyanMusic.plugins import ALL_MODULES
 from PragyanMusic.utils.database import get_banned_users, get_gbanned
