@@ -55,7 +55,7 @@ def stream_markup_timer(_, chat_id, played, dur):
     else:
         bar = "—————————◉"
     
-    # Updated buttons with consistent 💙 for "Owner" and "Support"
+    # Updated buttons with clapperboard 🎬, loop 🔄, etc.
     buttons = [
         [
             InlineKeyboardButton(
@@ -64,10 +64,10 @@ def stream_markup_timer(_, chat_id, played, dur):
             )
         ],
         [
-            InlineKeyboardButton(text="▷", callback_data=f"ADMIN Resume|{chat_id}"),
-            InlineKeyboardButton(text="⏸", callback_data=f"ADMIN Pause|{chat_id}"),
-            InlineKeyboardButton(text="⏭", callback_data=f"ADMIN Skip|{chat_id}"),
-            InlineKeyboardButton(text="⏹", callback_data=f"ADMIN Stop|{chat_id}"),
+            InlineKeyboardButton(text="🎬", callback_data=f"ADMIN Resume|{chat_id}"),  # Clapperboard for Play
+            InlineKeyboardButton(text="❚❚", callback_data=f"ADMIN Pause|{chat_id}"),  # Unique Pause with vertical bars
+            InlineKeyboardButton(text="🔄", callback_data=f"ADMIN Skip|{chat_id}"),   # Loop for Skip
+            InlineKeyboardButton(text="🛑", callback_data=f"ADMIN Stop|{chat_id}"),  # Stop sign for Stop
         ],
         [
             InlineKeyboardButton(text="𝐎𝐰𝐧𝐞𝐫💙", user_id=config.OWNER_ID),
@@ -83,10 +83,10 @@ def stream_markup_timer(_, chat_id, played, dur):
 def stream_markup(_, chat_id):
     buttons = [
         [
-            InlineKeyboardButton(text="▷", callback_data=f"ADMIN Resume|{chat_id}"),
-            InlineKeyboardButton(text="⏸", callback_data=f"ADMIN Pause|{chat_id}"),
-            InlineKeyboardButton(text="⏭", callback_data=f"ADMIN Skip|{chat_id}"),
-            InlineKeyboardButton(text="⏹", callback_data=f"ADMIN Stop|{chat_id}"),
+            InlineKeyboardButton(text="🎬", callback_data=f"ADMIN Resume|{chat_id}"),  # Clapperboard for Play
+            InlineKeyboardButton(text="❚❚", callback_data=f"ADMIN Pause|{chat_id}"),  # Pause symbol ❚❚
+            InlineKeyboardButton(text="🔄", callback_data=f"ADMIN Skip|{chat_id}"),   # Loop for Skip
+            InlineKeyboardButton(text="🛑", callback_data=f"ADMIN Stop|{chat_id}"),  # Stop sign for Stop
         ],
         [
             InlineKeyboardButton(text="𝐎𝐰𝐧𝐞𝐫💙", user_id=config.OWNER_ID),
