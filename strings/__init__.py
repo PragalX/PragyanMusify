@@ -1,6 +1,15 @@
+# Copyright (C) 2024 by IamDvis@Github, < https://github.com/IamDvis >.
+#
+# This file is part of < https://github.com/IamDvis/DV-MUSIC > project,
+# and is released under the MIT License.
+# Please see < https://github.com/IamDvis/DV-MUSIC/blob/master/LICENSE >
+#
+# All rights reserved.
+
 import os
 import sys
-from typing import List, Optional
+from typing import List
+
 import yaml
 
 languages = {}
@@ -8,51 +17,44 @@ commands = {}
 languages_present = {}
 
 
-def get_command(lang: str, value: str) -> Optional[str]:
-    """Retrieve a specific command for the given language and command name."""
-    try:
-        return commands[lang][value]
-    except KeyError:
-        print(f"Command '{value}' not found in language '{lang}'.")
-        return None
+def get_command(value: str) -> List:
+    return commands["command"].get(value, [])
 
 
 def get_string(lang: str):
-    """Retrieve all strings for a specified language."""
-    return languages.get(lang)
+    return languages.get(lang, {})
 
 
-# Load command mappings for each language file in ./strings
+# Load commands from the strings directory
 for filename in os.listdir(r"./strings"):
     if filename.endswith(".yml"):
         language_name = filename[:-4]
-        with open(f"./strings/{filename}", encoding="utf8") as f:
-            commands[language_name] = yaml.safe_load(f)
+        commands[language_name] = yaml.safe_load(
+            open(r"./strings/" + filename, encoding="utf8")
+        )
 
-# Load translation strings for each language in ./strings/langs/
+# Load languages from the langs directory
 for filename in os.listdir(r"./strings/langs/"):
     if "en" not in languages:
-        with open(r"./strings/langs/en.yml", encoding="utf8") as f:
-            languages["en"] = yaml.safe_load(f)
-        languages_present["en"] = languages["en"].get("name", "English")
-
+        languages["en"] = yaml.safe_load(
+            open(r"./strings/langs/en.yml", encoding="utf8")
+        )
+        languages_present["en"] = languages["en"]["name"]
     if filename.endswith(".yml"):
         language_name = filename[:-4]
         if language_name == "en":
             continue
-        with open(r"./strings/langs/" + filename, encoding="utf8") as f:
-            languages[language_name] = yaml.safe_load(f)
-        # Ensure missing keys in non-English languages are populated with English defaults
+        languages[language_name] = yaml.safe_load(
+            open(r"./strings/langs/" + filename, encoding="utf8")
+        )
+        # Ensure all English items exist in each language file
         for item in languages["en"]:
-            languages[language_name].setdefault(item, languages["en"][item])
-
+            if item not in languages[language_name]:
+                languages[language_name][item] = languages["en"][item]
     try:
         languages_present[language_name] = languages[language_name]["name"]
     except KeyError:
         print(
-            "There is an issue with a language file. Please report it to the DNS NETWORK at @DNS_NETWORK on Telegram."
+            "There is some issue with the language file inside bot. Please report it to the DNS NETWORK at @DNS_NETWORK on Telegram"
         )
         sys.exit()
-
-# Example usage to retrieve a command in English
-GETLOG_COMMAND = get_command("en", "GETLOG_COMMAND")
