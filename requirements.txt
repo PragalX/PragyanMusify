@@ -34,7 +34,7 @@ httpx==0.25.2
 httpx[http2]
 lexica-api==1.5.1
 lyricsgenius
-motor==3.3.2
+
 ntgcalls==1.1.2
 openai==0.28.0
 pickledb
