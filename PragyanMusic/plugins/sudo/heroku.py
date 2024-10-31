@@ -46,7 +46,7 @@ from git import Repo
 from git.exc import GitCommandError, InvalidGitRepositoryError
 from pyrogram import filters
 
-from config import OWNER_ID, HEROKU_API_KEY, UPSTREAM_BRANCH, LOGGER_ID, LOG_FILE_NAME
+from config import OWNER_ID, HEROKU_API_KEY, UPSTREAM_BRANCH, LOGGER_ID
 from strings import get_command
 from PragyanMusic import app
 from PragyanMusic.misc import HAPP, SUDOERS, XCB
