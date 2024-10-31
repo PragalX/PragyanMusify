@@ -18,7 +18,10 @@ faker
 ffmpeg-python
 flask
 future==0.18.3
-git+https://github.com/KurimuzonAkuma/pyrogram@dev
+py-tgcalls==0.9.7
+pykeyboard
+pyshorteners
+pyrogram==2.0.106
 git+https://github.com/yt-dlp/yt-dlp
 git+https://github.com/alexmercerind/youtube-search-python@main
 git+https://github.com/joetats/youtube_search@master
@@ -39,7 +42,7 @@ openai==0.28.0
 pickledb
 pornhub-api==0.2.0
 psutil
-py-tgcalls==1.2.9
+
 pycountry
 pyfiglet
 pykeyboard
