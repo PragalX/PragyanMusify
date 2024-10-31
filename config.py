@@ -25,6 +25,7 @@ EVALOP = list(map(int, getenv("EVALOP","7005020577").split()))
 MONGO_DB_URI = getenv("MONGO_DB_URI", None)
 DEEP_API = getenv("DEEP_API","ef488aaf-e253-4cd9-b115-d24ece89a5c7")
 DURATION_LIMIT_MIN = int(getenv("DURATION_LIMIT", 9999999))
+TOKEN_ALLOW = os.getenv("TOKEN_ALLOW", "True")
 
 # Chat id of a group for logging bot's activities
 LOGGER_ID = int(getenv("LOGGER_ID", -1002097075186))
