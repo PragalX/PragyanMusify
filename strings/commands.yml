@@ -1,4 +1,5 @@
 # Bot Commands
+command:
 PING_COMMAND:
   - "ping"
   - "alive"
