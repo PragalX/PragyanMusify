@@ -33,7 +33,7 @@ from PragyanMusic.utils.database import (
     remove_active_video_chat,
 )
 from PragyanMusic.utils.decorators.language import language
-from PragyanMusic.utils.pastebin import ERAbin
+from PragyanMusic.utils.pastebin import PragyanMusicbin
 
 # Commands
 GETLOG_COMMAND = get_command("GETLOG_COMMAND")
