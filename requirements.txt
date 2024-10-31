@@ -34,19 +34,15 @@ httpx==0.25.2
 httpx[http2]
 lexica-api==1.5.1
 lyricsgenius
-
 ntgcalls==1.1.2
 openai==0.28.0
 pickledb
-pillow==9.5.0
 pornhub-api==0.2.0
 psutil
 py-tgcalls==1.2.9
-
 pycountry
 pyfiglet
 pykeyboard
-
 pyromod
 pydub
 python-dotenv
@@ -65,7 +61,6 @@ tgcrypto
 unidecode
 urllib3
 uvloop
-wget
 yt-dlp
 pytube
 pytz
