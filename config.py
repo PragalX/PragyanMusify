@@ -28,7 +28,7 @@ DURATION_LIMIT_MIN = int(getenv("DURATION_LIMIT", 9999999))
 TOKEN_ALLOW = os.getenv("TOKEN_ALLOW", "True")
 
 # Chat id of a group for logging bot's activities
-LOGGER_ID = int(getenv("LOGGER_ID", -1002097075186))
+LOGGER_ID = "@loggerhaibhai"
 
 # Get this value from  on Telegram by /id
 OWNER_ID = int(getenv("OWNER_ID", 7055536651))
