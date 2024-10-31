@@ -5,8 +5,6 @@ pornhub-api==0.2.0
 aiohttp==3.9.1
 asyncio==3.4.3
 beautifulsoup4
-motor==2.5.0
-wget
 pillow==9.5.0
 Abg==2.3.1
 deep-translator
@@ -23,7 +21,7 @@ hachoir
 heroku3
 httpx[http2]
 lyricsgenius
-motor==2.5.0
+
 wget
 pillow==9.5.0
 pymongo==3.12.0
