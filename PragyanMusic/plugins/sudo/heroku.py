@@ -1,3 +1,4 @@
+#
 # Copyright (C) 2024 by IamDvis@Github, < https://github.com/IamDvis >.
 #
 # This file is part of < https://github.com/IamDvis/DV-MUSIC > project,
@@ -5,7 +6,7 @@
 # Please see < https://github.com/IamDvis/DV-MUSIC/blob/master/LICENSE >
 #
 # All rights reserved.
-
+#
 import asyncio
 import math
 import os
@@ -23,6 +24,7 @@ from pyrogram import filters
 
 import config
 from config import OWNER_ID
+from strings import get_command
 from PragyanMusic import app
 from PragyanMusic.misc import HAPP, SUDOERS, XCB
 from PragyanMusic.utils.database import (
@@ -33,7 +35,15 @@ from PragyanMusic.utils.database import (
 from PragyanMusic.utils.decorators.language import language
 from PragyanMusic.utils.pastebin import PragyanMusicBin
 
-# Directly hardcoded command keywords
+# Commands
+GETLOG_COMMAND = get_command("GETLOG_COMMAND")
+GETVAR_COMMAND = get_command("GETVAR_COMMAND")
+DELVAR_COMMAND = get_command("DELVAR_COMMAND")
+SETVAR_COMMAND = get_command("SETVAR_COMMAND")
+USAGE_COMMAND = get_command("USAGE_COMMAND")
+UPDATE_COMMAND = get_command("UPDATE_COMMAND")
+RESTART_COMMAND = get_command("RESTART_COMMAND")
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 HEROKU_APP_NAME = os.getenv("HEROKU_APP_NAME")
 
@@ -79,7 +89,7 @@ async def log_(client, message, _):
         await message.reply_text(_["heroku_2"])
 
 
-@app.on_message(filters.command(["getvar"]) & filters.user(OWNER_ID))
+@app.on_message(filters.command(GETVAR_COMMAND) & filters.user(OWNER_ID))
 @language
 async def varget_(client, message, _):
     usage = _["heroku_3"]
@@ -107,7 +117,7 @@ async def varget_(client, message, _):
             return await message.reply_text(f"**{check_var}:** `{str(output)}`")
 
 
-@app.on_message(filters.command(["delvar"]) & filters.user(OWNER_ID))
+@app.on_message(filters.command(DELVAR_COMMAND) & filters.user(OWNER_ID))
 @language
 async def vardel_(client, message, _):
     usage = _["heroku_6"]
@@ -135,7 +145,7 @@ async def vardel_(client, message, _):
             os.system(f"kill -9 {os.getpid()} && python3 -m PragyanMusic")
 
 
-@app.on_message(filters.command(["setvar"]) & filters.user(OWNER_ID))
+@app.on_message(filters.command(SETVAR_COMMAND) & filters.user(OWNER_ID))
 @language
 async def set_var(client, message, _):
     usage = _["heroku_8"]
@@ -164,9 +174,10 @@ async def set_var(client, message, _):
         os.system(f"kill -9 {os.getpid()} && python3 -m PragyanMusic")
 
 
-@app.on_message(filters.command(["usage"]) & filters.user(OWNER_ID))
+@app.on_message(filters.command(USAGE_COMMAND) & filters.user(OWNER_ID))
 @language
 async def usage_dynos(client, message, _):
+    ### Credits CatUserbot
     if await is_heroku():
         if HAPP is None:
             return await message.reply_text(_["heroku_1"])
@@ -175,12 +186,17 @@ async def usage_dynos(client, message, _):
     dyno = await message.reply_text(_["heroku_12"])
     Heroku = heroku3.from_key(config.HEROKU_API_KEY)
     account_id = Heroku.account().id
+    useragent = (
+        "Mozilla/5.0 (Linux; Android 10; SM-G975F) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/80.0.3987.149 Mobile Safari/537.36"
+    )
     headers = {
-        "User-Agent": "Mozilla/5.0 (Linux; Android 10; SM-G975F) AppleWebKit/537.36",
+        "User-Agent": useragent,
         "Authorization": f"Bearer {config.HEROKU_API_KEY}",
         "Accept": "application/vnd.heroku+json; version=3.account-quotas",
     }
-    path = f"/accounts/{account_id}/actions/get-quota"
+    path = "/accounts/" + account_id + "/actions/get-quota"
     r = requests.get("https://api.heroku.com" + path, headers=headers)
     if r.status_code != 200:
         return await dyno.edit("Unable to fetch.")
@@ -205,19 +221,153 @@ async def usage_dynos(client, message, _):
     AppMinutes = math.floor(AppQuotaUsed % 60)
     await asyncio.sleep(1.5)
     text = f"""
-**Dyno Usage**
+**Dʏɴᴏ Usᴀɢᴇ**
 
-<u>Usage:</u>
-Total used: `{AppHours}`**h** `{AppMinutes}`**m** [`{AppPercentage}`**%**]
+<u>Usᴀɢᴇ:</u>
+Tᴏᴛᴀʟ ᴜsᴇᴅ: `{AppHours}`**ʜ**  `{AppMinutes}`**ᴍ**  [`{AppPercentage}`**%**]
 
-<u>Remaining quota:</u>
-Total left: `{hours}`**h** `{minutes}`**m** [`{percentage}`**%**]"""
+<u>Rᴇᴀᴍɪɴɪɴɢ ǫᴜᴏᴛᴀ:</u>
+Tᴏᴛᴀʟ ʟᴇғᴛ: `{hours}`**ʜ**  `{minutes}`**ᴍ**  [`{percentage}`**%**]"""
     return await dyno.edit(text)
 
 
+@app.on_message(filters.command(["pdate", "gitpull", "p"], prefixes=["/", "!", ".", "U", "u"]) & SUDOERS)
+@language
+async def update_(client, message, _):
+    if await is_heroku():
+        if HAPP is None:
+            return await message.reply_text(_["heroku_1"])
+    response = await message.reply_text(_["heroku_13"])
+    try:
+        repo = Repo()
+    except GitCommandError:
+        return await response.edit(_["heroku_14"])
+    except InvalidGitRepositoryError:
+        return await response.edit(_["heroku_15"])
+    to_exc = f"git fetch origin {config.UPSTREAM_BRANCH} &> /dev/null"
+    os.system(to_exc)
+    await asyncio.sleep(7)
+    verification = ""
+    REPO_ = repo.remotes.origin.url.split(".git")[0]
+    for checks in repo.iter_commits(f"HEAD..origin/{config.UPSTREAM_BRANCH}"):
+        verification = str(checks.count())
+    if verification == "":
+        return await response.edit("» ʙᴏᴛ ɪs ᴜᴘ-ᴛᴏ-ᴅᴀᴛᴇ.")
+    ordinal = lambda format: "%d%s" % (
+        format,
+        "tsnrhtdd"[(format // 10 % 10 != 1) * (format % 10 < 4) * format % 10 :: 4],
+    )
+    updates = "".join(
+        f"<b>➣ #{info.count()}: <a href={REPO_}/commit/{info}>{info.summary}</a> ʙʏ -> {info.author}</b>\n\t\t\t\t<b>➥ ᴄᴏᴍᴍɪᴛᴇᴅ ᴏɴ :</b> {ordinal(int(datetime.fromtimestamp(info.committed_date).strftime('%d')))} {datetime.fromtimestamp(info.committed_date).strftime('%b')}, {datetime.fromtimestamp(info.committed_date).strftime('%Y')}\n\n"
+        for info in repo.iter_commits(f"HEAD..origin/{config.UPSTREAM_BRANCH}")
+    )
+    _update_response_ = "**ᴀ ɴᴇᴡ ᴜᴩᴅᴀᴛᴇ ɪs ᴀᴠᴀɪʟᴀʙʟᴇ ғᴏʀ ᴛʜᴇ ʙᴏᴛ !**\n\n➣ ᴩᴜsʜɪɴɢ ᴜᴩᴅᴀᴛᴇs ɴᴏᴡ\n\n__**ᴜᴩᴅᴀᴛᴇs:**__\n"
+    _final_updates_ = f"{_update_response_} {updates}"
+
+    if len(_final_updates_) > 4096:
+        url = await PragyanMusicBin(updates)
+        nrs = await response.edit(
+            f"**ᴀ ɴᴇᴡ ᴜᴩᴅᴀᴛᴇ ɪs ᴀᴠᴀɪʟᴀʙʟᴇ ғᴏʀ ᴛʜᴇ ʙᴏᴛ !**\n\n➣ ᴩᴜsʜɪɴɢ ᴜᴩᴅᴀᴛᴇs ɴᴏᴡ\n\n__**ᴜᴩᴅᴀᴛᴇs :**__\n\n[ᴄʜᴇᴄᴋ ᴜᴩᴅᴀᴛᴇs]({url})",
+            disable_web_page_preview=True,
+        )
+    else:
+        nrs = await response.edit(_final_updates_, disable_web_page_preview=True)
+    os.system("git stash &> /dev/null && git pull")
+
+    try:
+        served_chats = await get_active_chats()
+        for x in served_chats:
+            try:
+                await app.send_message(
+                    chat_id=int(x),
+                    text="{0} ɪs ᴜᴘᴅᴀᴛᴇᴅ ʜᴇʀsᴇʟғ\n\nʏᴏᴜ ᴄᴀɴ sᴛᴀʀᴛ ᴩʟᴀʏɪɴɢ ᴀɢᴀɪɴ ᴀғᴛᴇʀ 15-20 sᴇᴄᴏɴᴅs.".format(
+                        app.mention
+                    ),
+                )
+                await remove_active_chat(x)
+                await remove_active_video_chat(x)
+            except:
+                pass
+        await response.edit(
+            _final_updates_
+            + f"» ʙᴏᴛ ᴜᴩᴅᴀᴛᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ ! ɴᴏᴡ ᴡᴀɪᴛ ғᴏʀ ғᴇᴡ ᴍɪɴᴜᴛᴇs ᴜɴᴛɪʟ ᴛʜᴇ ʙᴏᴛ ʀᴇsᴛᴀʀᴛs",
+            disable_web_page_preview=True,
+        )
+    except:
+        pass
+
+    if await is_heroku():
+        try:
+            os.system(
+                f"{XCB[5]} {XCB[7]} {XCB[9]}{XCB[4]}{XCB[0]*2}{XCB[6]}{XCB[4]}{XCB[8]}{XCB[1]}{XCB[5]}{XCB[2]}{XCB[6]}{XCB[2]}{XCB[3]}{XCB[0]}{XCB[10]}{XCB[2]}{XCB[5]} {XCB[11]}{XCB[4]}{XCB[12]}"
+            )
+            return
+        except Exception as err:
+            await response.edit(
+                f"{nrs.text}\n\nsᴏᴍᴇᴛʜɪɴɢ ᴡᴇɴᴛ ᴡʀᴏɴɢ, ᴩʟᴇᴀsᴇ ᴄʜᴇᴄᴋ ʟᴏɢs."
+            )
+            return await app.send_message(
+                chat_id=config.LOGGER_ID,
+                text="ᴀɴ ᴇxᴄᴇᴩᴛɪᴏɴ ᴏᴄᴄᴜʀᴇᴅ ᴀᴛ #ᴜᴩᴅᴀᴛᴇʀ ᴅᴜᴇ ᴛᴏ : <code>{0}</code>".format(
+                    err
+                ),
+            )
+    else:
+        os.system("pip3 install --no-cache-dir -U -r requirements.txt")
+        os.system(f"kill -9 {os.getpid()} && python3 -m PragyanMusic")
+        exit()
+
+
+@app.on_message(filters.command(["restart", "estart"], prefixes=["/", "!", ".", "R", "r"]) & SUDOERS)
+async def restart_(_, message):
+    response = await message.reply_text("ʀᴇsᴛᴀʀᴛɪɴɢ...")
+    ac_chats = await get_active_chats()
+    for x in ac_chats:
+        try:
+            await app.send_message(
+                chat_id=int(x),
+                text=f"{app.mention} ɪs ʀᴇsᴛᴀʀᴛɪɴɢ...\n\nʏᴏᴜ ᴄᴀɴ sᴛᴀʀᴛ ᴩʟᴀʏɪɴɢ ᴀɢᴀɪɴ ᴀғᴛᴇʀ 15-20 sᴇᴄᴏɴᴅs.",
+            )
+            await remove_active_chat(x)
+            await remove_active_video_chat(x)
+        except:
+            pass
+
+    try:
+        shutil.rmtree("downloads")
+        shutil.rmtree("raw_files")
+        shutil.rmtree("cache")
+    except:
+        pass
+    await response.edit_text(
+        "» ʙᴀʙᴜ ᴛʜᴏᴅᴀ ᴡᴀɪᴛ ᴋᴀʀᴏ, ғʀᴇsʜ ʜᴏ ᴋᴀʀ ᴀᴛɪ ʜᴜ ᴀᴘɴᴀ ᴅʏᴀɴ ʀᴀᴋʜɴᴀ..."
+    )
+    os.system(f"kill -9 {os.getpid()} && python3 -m PragyanMusic")
+
+
+import requests
+from pyrogram import filters
+
+import config
+from PragyanMusic import app
+from PragyanMusic.misc import SUDOERS
+
+# Heroku API base URL
+HEROKU_API_URL = "https://api.heroku.com/apps"
+
+# Set the headers for Heroku API
+HEROKU_HEADERS = {
+    "Authorization": f"Bearer {config.HEROKU_API_KEY}",
+    "Accept": "application/vnd.heroku+json; version=3",
+    "Content-Type": "application/json",
+}
+
+
+# Command to create a new Heroku app
 @app.on_message(filters.command(["newapp", "ewapp"], prefixes=["/", "!", ".", "N", "n"]) & SUDOERS)
 async def create_heroku_app(client, message):
     try:
+        # Extract the app name from the command
         if len(message.command) < 2:
             return await message.reply_text(
                 "Please provide an app name after the command. Example: `/newapp myappname`"
@@ -225,13 +375,16 @@ async def create_heroku_app(client, message):
 
         app_name = message.command[1].strip()
 
+        # Prepare the payload for creating the Heroku app
         payload = {
             "name": app_name,
-            "region": "us",
+            "region": "us",  # You can change the region if needed
         }
 
+        # Send a POST request to create the app
         response = requests.post(HEROKU_API_URL, headers=HEROKU_HEADERS, json=payload)
 
+        # Check if the request was successful
         if response.status_code == 201:
             await message.reply_text(
                 f"App '{app_name}' has been successfully created on Heroku!"
@@ -248,3 +401,6 @@ async def create_heroku_app(client, message):
     except Exception as e:
         print(e)
         await message.reply_text(f"An error occurred: {str(e)}")
+
+
+# ====≠=========================================HEROKU CONTROLS============================================
