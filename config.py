@@ -16,11 +16,11 @@ BOT_TOKEN = getenv("BOT_TOKEN")
 # Add Owner Username without @ 
 OWNER_USERNAME = getenv("OWNER_USERNAME","Pragyan")
 # Get Your bot username
-BOT_USERNAME = getenv("BOT_USERNAME" , "VersersMusicBot")
+BOT_USERNAME = getenv("BOT_USERNAME" , "PragyanMusicBot")
 # Don't Add style font 
-BOT_NAME = getenv("BOT_NAME" , "Versers Music")
+BOT_NAME = getenv("BOT_NAME" , "Pragyan Music")
 #get Your Assistant User name
-ASSUSERNAME = getenv("ASSUSERNAME" , "VersersMusicAssistant")
+ASSUSERNAME = getenv("ASSUSERNAME" , "PragyanMusicAssistant")
 EVALOP = list(map(int, getenv("EVALOP","7055536651").split()))
 
 # Get your mongo url from cloud.mongodb.com
